@@ -1,0 +1,22 @@
+{
+  "rooms": [ "1.csv", "1.csv", "1.csv", "1.csv" ],
+  "human": {
+    "speed": {
+      "min": 1.0,
+      "default": 1.0,
+      "max": 2.0
+    }
+  },
+
+  "ghost": {
+    "speed": {
+      "min": 1.0,
+      "default": 1.0,
+      "max": 2.0
+    }
+  },
+
+  "tick": 0.1,
+  "port": 3000
+
+}
