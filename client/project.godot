@@ -1,0 +1,73 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Node",
+"class": "GameBase",
+"language": "GDScript",
+"path": "res://scripts/game_base.gd"
+}, {
+"base": "Reference",
+"class": "Logger",
+"language": "GDScript",
+"path": "res://scripts/logger.gd"
+}, {
+"base": "Reference",
+"class": "Map",
+"language": "GDScript",
+"path": "res://scripts/map.gd"
+} ]
+_global_script_class_icons={
+"GameBase": "",
+"Logger": "",
+"Map": ""
+}
+
+[application]
+
+config/name="Tag"
+run/main_scene="res://scenes/title.tscn"
+config/icon="res://icon.png"
+
+[autoload]
+
+Router="*res://scripts/router.gd"
+ConnectionManager="*res://scripts/connection_manager.gd"
+GlobalData="*res://scripts/global_data.gd"
+
+[display]
+
+window/size/width=1280
+window/size/height=720
+
+[input]
+
+next_room={
+"deadzone": 0.5,
+"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":5,"pressure":0.0,"pressed":false,"script":null)
+ ]
+}
+previous_room={
+"deadzone": 0.5,
+"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":4,"pressure":0.0,"pressed":false,"script":null)
+ ]
+}
+
+[rendering]
+
+quality/driver/driver_name="GLES2"
+quality/intended_usage/framebuffer_allocation.mobile=2
+vram_compression/import_etc=true
+vram_compression/import_etc2=false
+quality/shading/force_vertex_shading.mobile=false
+quality/shading/force_lambert_over_burley=true
+quality/shading/force_blinn_over_ggx=true
+quality/depth_prepass/enable=false
+environment/default_environment="res://default_env.tres"

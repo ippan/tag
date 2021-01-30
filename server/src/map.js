@@ -1,3 +1,5 @@
+const Tool = require('./tool');
+
 class Room {
     constructor(text) {
 
@@ -5,6 +7,9 @@ class Room {
 
         this.width = map_data[0].split(',').length;
         this.height = map_data.length;
+
+        this.offset_x = this.width * -0.5 - 0.5
+        this.offset_y = this.height * -0.5 - 0.5
 
         let data = []
         let path_indices = [];
@@ -36,11 +41,32 @@ class Room {
     serialize() {
         return `${ this.width }:${ this.height }:${ this.data.map(value => value.toString(16)).join('') }`;
     }
+
+    getRandomPathIndex() {
+        return this.path_indices[Tool.randomInt(this.path_indices.length)];
+    }
+
+    getRandomPathPosition() {
+        let index = this.getRandomPathIndex();
+
+        return {
+            "x": (index % this.width) + this.offset_x,
+            "y": Math.floor(index / this.width) + this.offset_y
+        }
+    }
 }
 
 class MapState {
     constructor(map) {
         this.map = map;
+    }
+
+    getRoomCount() {
+        return this.map.rooms.length;
+    }
+
+    getRoom(id) {
+        return this.map.rooms[id];
     }
 }
 
@@ -55,6 +81,10 @@ class Map {
 
     serialize() {
         return this.rooms.map(room => room.serialize()).join('|');
+    }
+
+    createMapState() {
+        return new MapState(this);
     }
 }
 

@@ -1,22 +1,21 @@
 {
-  "rooms": [ "1.csv", "1.csv", "1.csv", "1.csv" ],
+  "rooms": [ "1.csv", "2.csv", "3.csv", "4.csv" ],
   "human": {
-    "speed": {
-      "min": 1.0,
-      "default": 1.0,
-      "max": 2.0
-    }
+    "speed": 2.0,
+    "sight": 4.0
   },
 
   "ghost": {
-    "speed": {
-      "min": 1.0,
-      "default": 1.0,
-      "max": 2.0
-    }
+    "speed": 3.0,
+    "sight": 5.0
   },
 
-  "tick": 0.1,
+  "game": {
+    "waiting_count_down": 10.0,
+    "ready_count_down": 5.0
+  },
+
+  "tick": 0.2,
   "port": 3000
 
 }
