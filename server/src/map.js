@@ -1,9 +1,11 @@
 const Tool = require('./tool');
 
 class Room {
-    constructor(text) {
+    constructor(id, text) {
 
         let map_data = text.split("\n");
+
+        this.id = id;
 
         this.width = map_data[0].split(',').length;
         this.height = map_data.length;
@@ -56,18 +58,70 @@ class Room {
     }
 }
 
+class RoomState {
+
+    constructor(room) {
+        this.room = room;
+        this.object_indices = Array.from(room.object_indices);
+        this.items = {};
+    }
+
+    putItem(id) {
+        if (this.object_indices.length === 0) {
+            return false;
+        }
+
+        let index = Tool.randomInt(this.object_indices.length);
+
+
+        this.items[this.object_indices[index]] = id;
+
+        this.object_indices.slice(index, 1);
+
+        return true;
+    }
+
+    serialize_items() {
+        return Object.keys(this.items).map(index => `${ index }:${ this.items[index] }`).join(',')
+    }
+}
+
 class MapState {
     constructor(map) {
         this.map = map;
+        this.room_states = map.rooms.map(room => new RoomState(room));
+    }
+
+    putItems(items) {
+        items.forEach(id => {
+            while (!this.randomRoom().putItem(id)) {}
+        });
     }
 
     getRoomCount() {
         return this.map.rooms.length;
     }
 
+    randomRoom() {
+        return this.room_states[Tool.randomInt(this.room_states.length)];
+    }
+
     getRoom(id) {
         return this.map.rooms[id];
     }
+
+    serialize_items() {
+        return this.room_states.map(room_state => room_state.serialize_items()).join('|');
+    }
+
+    getItem(room, index) {
+        return this.room_states[room].items[index];
+    }
+
+    removeItem(room, index) {
+        delete this.room_states[room].items[index];
+    }
+
 }
 
 class Map {
@@ -76,7 +130,7 @@ class Map {
     }
 
     addRoom(text) {
-        this.rooms.push(new Room(text));
+        this.rooms.push(new Room(this.rooms.length, text));
     }
 
     serialize() {

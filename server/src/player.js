@@ -13,6 +13,12 @@ class Player {
 
         this.speed = player_setting.speed;
         this.sight = player_setting.sight;
+
+        this.items = {}
+    }
+
+    hasStone() {
+        return this.items.hasOwnProperty(1) || this.items.hasOwnProperty(2) || this.items.hasOwnProperty(3);
     }
 
     serialize() {

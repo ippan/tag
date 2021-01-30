@@ -66,6 +66,8 @@ class InGameState extends  GameState {
 
         this.players = [];
 
+        this.player_id_to_index = {}
+
         this.ghost_id = Tool.randomInt(this.parent.getPlayerCount());
 
         let room_count = this.parent.map_state.getRoomCount();
@@ -95,12 +97,18 @@ class InGameState extends  GameState {
             player.x = start_position.x;
             player.y = start_position.y;
 
+            this.player_id_to_index[i] = this.players.length;
+
             this.players.push(player);
         }
 
         this.log(`start with ${ this.players.length } players`);
 
-        this.broadcast('STG XXX');
+        this.broadcast(`STG ${ this.parent.map_state.serialize_items() }`);
+    }
+
+    getPlayerById(id) {
+        return this.players[this.player_id_to_index[id]];
     }
 
     get_players(id, parameters) {
@@ -123,6 +131,21 @@ class InGameState extends  GameState {
         }
     }
 
+    get_item(id, parameters) {
+        let player = this.getPlayerById(id);
+
+        let room = parseInt(parameters[0]);
+        let index = parseInt(parameters[1]);
+
+        let item = this.parent.map_state.getItem(room, index);
+
+        if (item === 0 && player.hasStone()) {
+
+        }
+
+
+    }
+
 }
 
 class Game extends StateMachine {
@@ -140,6 +163,7 @@ class Game extends StateMachine {
         this.tick = setting.tick;
 
         this.map_state = map.createMapState();
+        this.map_state.putItems(setting.items);
 
         this.addState(new WaitingState());
         this.addState(new InGameState());
