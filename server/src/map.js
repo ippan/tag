@@ -76,7 +76,7 @@ class RoomState {
 
         this.items[this.object_indices[index]] = id;
 
-        this.object_indices = this.object_indices.slice(index, 1);
+        this.object_indices.splice(index, 1);
 
         return true;
     }
