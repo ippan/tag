@@ -30,11 +30,12 @@ func add_observer(observer):
             
         observers[message].append(observer)
 
-func route(message):
+func route(message, log_message = true):
     if typeof(message) == TYPE_STRING:
         message = { name = message }    
     
-    Logger.info("(message)" +  to_json(message))
+    if log_message:
+        Logger.info("(message)" +  to_json(message))
     
     if observers.has(message.name):
         for observer in observers[message.name]:

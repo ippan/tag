@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://data/music/main.wav" type="AudioStream" id=1]
+[ext_resource path="res://scripts/sfx.gd" type="Script" id=2]
+
+[node name="sfx" type="Node"]
+script = ExtResource( 2 )
+
+[node name="music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 1 )
+autoplay = true
+bus = "Music"
+
+[node name="audio" type="AudioStreamPlayer" parent="."]

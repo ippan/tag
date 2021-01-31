@@ -43,7 +43,7 @@ func on_data():
     Router.route({
         name = "packet_arrived",
         packet = packet
-    })
+    }, false)
 
 func send(packet: String):
     client.get_peer(1).put_packet(packet.to_utf8())

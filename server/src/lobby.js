@@ -52,6 +52,8 @@ class Lobby {
 
             if (game.is_active) {
                 new_games.push(game);
+            } else {
+                console.log(`game [${ game.id }] deleted`)
             }
         }
 

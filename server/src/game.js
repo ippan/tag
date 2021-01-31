@@ -7,7 +7,9 @@ class GameState extends State {
     onDisconnect(id) {}
 
     send(id, message) {
-        this.parent.players[id].send(message);
+        if (this.parent.players[id]) {
+            this.parent.players[id].send(message);
+        }
     }
 
     changeState(state_name) {
@@ -20,6 +22,15 @@ class GameState extends State {
 
     log(message) {
         this.parent.log(`[${ this.getName() }] ${ message }`)
+    }
+}
+
+class ClosedState extends GameState {
+    getName() { return 'closed' }
+
+    onEnter() {
+        super.onEnter();
+        this.parent.is_active = false;
     }
 }
 
@@ -51,7 +62,8 @@ class WaitingState extends GameState {
             if (this.parent.getPlayerCount() > 1) {
                 this.changeState("in_game");
             } else {
-                this.changeState("in_game");
+                this.broadcast(`BTT`);
+                this.changeState("closed");
             }
         }
     }
@@ -107,6 +119,24 @@ class InGameState extends  GameState {
         this.broadcast(`STG ${ this.parent.map_state.serialize_items() }`);
     }
 
+    onDisconnect(id) {
+        super.onDisconnect(id);
+
+        this.broadcast(`CBG ${ id }`);
+    }
+
+    onUpdate() {
+        super.onUpdate();
+
+        if (this.parent.getPlayerCount() === 0) {
+            this.changeState("closed");
+            return;
+        }
+
+
+
+    }
+
     getPlayerById(id) {
         return this.players[this.player_id_to_index[id]];
     }
@@ -117,33 +147,43 @@ class InGameState extends  GameState {
         this.send(id, `PLS ${ id } ${ players }`)
     }
 
-    update_position(id, parameters) {
+    sendToOthers(id, message) {
         for (let i = 0; i < this.players.length; ++i) {
             let player = this.players[i];
 
-            if (player.id === id) {
-                player.x = parseFloat(parameters[0])
-                player.y = parseFloat(parameters[1])
-                continue;
+            if (player.id !== id) {
+                this.send(i, message)
             }
-
-            this.send(i, `UPP ${ id } ${ parameters[0] } ${ parameters[1] }`)
         }
     }
 
-    get_item(id, parameters) {
+    player_win(id, message) {
+        this.broadcast('PYW');
+        this.changeState('closed');
+    }
+
+    update_position(id, parameters) {
         let player = this.getPlayerById(id);
+        player.x = parseFloat(parameters[0])
+        player.y = parseFloat(parameters[1])
+        this.sendToOthers(id, `UPP ${ id } ${ parameters[0] } ${ parameters[1] }`)
+    }
 
-        let room = parseInt(parameters[0]);
-        let index = parseInt(parameters[1]);
+    change_room(id, parameters) {
+        let player = this.getPlayerById(id);
+        player.room = parseInt(parameters[0])
+        player.x = parseFloat(parameters[1])
+        player.y = parseFloat(parameters[2])
 
-        let item = this.parent.map_state.getItem(room, index);
+        this.sendToOthers(id, `CHR ${ id } ${ parameters.join(' ') }`)
+    }
 
-        if (item === 0 && player.hasStone()) {
+    get_item(id, parameters) {
+        this.broadcast(`ITM ${ id } ${ parameters.join(' ') }`)
+    }
 
-        }
-
-
+    catch_by_ghost(id, parameters) {
+        this.broadcast(`CBG ${ id }`);
     }
 
 }
@@ -167,6 +207,7 @@ class Game extends StateMachine {
 
         this.addState(new WaitingState());
         this.addState(new InGameState());
+        this.addState(new ClosedState());
 
         this.players = [ null, null, null, null ]
 
@@ -245,7 +286,8 @@ class Game extends StateMachine {
         });
 
         websocket.on('close', () => {
-            console.log('disconnected');
+            this.players[index] = null;
+            this.current_state.onDisconnect(index);
         });
     }
 }

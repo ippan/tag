@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scripts/waiting.gd" type="Script" id=1]
 [ext_resource path="res://data/fonts/bold.otf" type="DynamicFontData" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://data/images/waiting_03.png" type="Texture" id=5]
 [ext_resource path="res://data/images/waiting_04.png" type="Texture" id=6]
 [ext_resource path="res://data/images/waiting_05.png" type="Texture" id=7]
+[ext_resource path="res://data/images/help.png" type="Texture" id=8]
 
 [sub_resource type="DynamicFont" id=1]
 size = 120
@@ -42,24 +43,22 @@ __meta__ = {
 }
 
 [node name="countdown" type="Label" parent="."]
-margin_left = 303.0
-margin_top = 246.0
-margin_right = 850.0
-margin_bottom = 474.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 custom_fonts/font = SubResource( 1 )
-text = "99"
+text = "Connecting..."
 align = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="join" type="Label" parent="."]
-margin_left = 10.0
+margin_left = 21.0
 margin_top = 616.0
-margin_right = 578.0
+margin_right = 868.0
 margin_bottom = 712.0
 custom_fonts/font = SubResource( 2 )
-text = "1 player(s) joined."
+text = "Waiting for other players..."
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -67,3 +66,10 @@ __meta__ = {
 [node name="animation" type="AnimationPlayer" parent="."]
 autoplay = "waiting"
 anims/waiting = SubResource( 3 )
+
+[node name="help" type="TextureRect" parent="."]
+margin_right = 601.0
+margin_bottom = 1045.0
+texture = ExtResource( 8 )
+expand = true
+stretch_mode = 5
