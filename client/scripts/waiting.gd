@@ -42,7 +42,7 @@ func process_wcd(text_countdown, text_player_count):
     if text_player_count == "1":
         $join.text = "Waiting for other players..."
     else:
-        $join.text = "%s player(s) joined." % [ int(text_player_count) - 1 ]
+        $join.text = "Current player: %s" % [ text_player_count ]
     
 
 func process_btt():

@@ -58,6 +58,11 @@ class WaitingState extends GameState {
 
         this.broadcast(`WCD ${ count_down.toFixed(2) } ${ this.parent.getPlayerCount() }`)
 
+        if (this.parent.getPlayerCount() ===  4) {
+            this.changeState("in_game");
+            return;
+        }
+
         if (count_down <= 0) {
             if (this.parent.getPlayerCount() > 1) {
                 this.changeState("in_game");
@@ -269,6 +274,8 @@ class Game extends StateMachine {
 
         this.current_state.onConnect(index);
 
+        this.log(`player [${ index } connected`)
+
         websocket.on('message', (message) => {
 
             let parameters = message.toString().split(' ')
@@ -287,6 +294,7 @@ class Game extends StateMachine {
 
         websocket.on('close', () => {
             this.players[index] = null;
+            this.log(`player [${ index } disconnected`)
             this.current_state.onDisconnect(index);
         });
     }

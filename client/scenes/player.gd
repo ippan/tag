@@ -8,9 +8,11 @@ var ghost_data = null
 
 var move_cd = 0.0
 
-var sync_countdown = 0.1
+var sync_countdown = 0.2
 
 var mesh_node = null
+
+var ghost_move_countdown = 30.0
 
 func update_player_data(player_data):
     data = player_data
@@ -83,10 +85,38 @@ func _process(delta):
     if move_cd > 0.0:
         move_cd -= delta
         
+    if data.is_ghost == 1:
+        ghost_move_countdown -= delta
+        
+        if ghost_move_countdown < 0.0:
+            move_room(data.room + 1)
+            
+            Router.route({ 
+                name = "show_message",
+                text = "Auto teleport"
+            })
+        
+        
+func move_room(new_room):
+    fade()
+    var next_room = GlobalData.map.get_room(new_room)
+    var position = next_room.get_random_path_position()
+    data.room = next_room.id
+    data.x = position.x
+    data.y = position.y
+        
+    ConnectionManager.send("change_room %s %s %s" % [ data.room, data.x, data.y ])
+        
+    update_player_data(data)
+    Sfx.play("teleport_success")
     
+    ghost_move_countdown = 30.0
+    move_cd = 10.0
+    
+    if data.is_ghost == 1:
+        move_cd += 5.0
 
-func _input(event):
-    
+func _input(event):    
     
     if event.is_action_pressed("next_room") or event.is_action_pressed("previous_room"):
         if move_cd > 0.0:
@@ -104,24 +134,8 @@ func _input(event):
         if data.is_ghost == 0 and data.room == ghost_data.room:
             Sfx.play("teleport_fail")
             return
-        
-        fade()
-        move_cd += 10.0
             
-        if data.is_ghost == 1:
-            move_cd += 5.0
-            
-        var next_room = GlobalData.map.get_room(data.room + room_delta)
-        var position = next_room.get_random_path_position()
-        data.room = next_room.id
-        data.x = position.x
-        data.y = position.y
-        
-        ConnectionManager.send("change_room %s %s %s" % [ data.room, data.x, data.y ])
-        
-        update_player_data(data)
-        Sfx.play("teleport_success")
-    
+        move_room(data.room + room_delta)   
     
     if data.is_ghost == 1:
         return

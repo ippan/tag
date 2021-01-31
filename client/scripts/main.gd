@@ -51,7 +51,7 @@ func get_supported_messages():
 
 func show_message(message):
     $message.text = message
-    show_message_count_down = 5.0
+    show_message_count_down = 1.0
 
 func _process(delta):
     
@@ -184,7 +184,7 @@ func process_itm(text_id, text_room, text_index):
         $items.add_child(item)
         
         if item_id == 5:
-            player_datas[id].speed += 0.5
+            player_datas[id].speed += 0.25
         elif item_id == 6:
             player_datas[id].sight += 0.5
             
@@ -201,5 +201,5 @@ func process_itm(text_id, text_room, text_index):
 
 func process_pyw():
     Router.reset()
-    get_tree().change_scene("res://scenes/player_win.tscn")
+    get_tree().change_scene("res://scenes/human_win.tscn")
     
