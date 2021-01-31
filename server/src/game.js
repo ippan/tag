@@ -274,7 +274,7 @@ class Game extends StateMachine {
 
         this.current_state.onConnect(index);
 
-        this.log(`player [${ index } connected`)
+        this.log(`player [${ index }] connected`)
 
         websocket.on('message', (message) => {
 
@@ -294,7 +294,7 @@ class Game extends StateMachine {
 
         websocket.on('close', () => {
             this.players[index] = null;
-            this.log(`player [${ index } disconnected`)
+            this.log(`player [${ index }] disconnected`)
             this.current_state.onDisconnect(index);
         });
     }
